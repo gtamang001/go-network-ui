@@ -15,7 +15,7 @@ func main() {
 	http.HandleFunc("/results", handlers.ResultsHandler)
 
 	http.HandleFunc("/upload", handlers.UploadHandler)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/download", handlers.DownloadHandler)
 
 	fmt.Println("Server started at http://localhost:8080")
