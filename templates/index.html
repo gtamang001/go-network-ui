@@ -2,102 +2,156 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Go Network Tester</title>
+    <title>Go Network Test UI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        body.dark-mode .table {
+            color: #ffffff;
+            background-color: #1e1e1e;
+        }
+        body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #2a2a2a;
+        }
+        body.dark-mode .btn {
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+        body.dark-mode .btn-primary {
+            background-color: #1f6feb;
+            border-color: #1f6feb;
+        }
+        body.dark-mode .btn-outline-dark {
+            background-color: #333333;
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+        body.dark-mode input.form-control {
+            background-color: #2a2a2a;
+            color: #ffffff;
+            border-color: #444;
+        }
+        body.dark-mode input.form-control::placeholder {
+            color: #bbbbbb;
+        }
+        body.dark-mode input[type="file"] {
+            background-color: #2a2a2a;
+            color: #ffffff;
+        }
+        body.dark-mode .spinner-border {
+            border-color: #ffffff;
+            border-right-color: transparent;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body class="container mt-4">
 
-<div class="container mt-5">
-    <h1 class="mb-4">🔌 Go Network Tester</h1>
+    <div class="mb-3 text-end">
+        <button id="darkModeToggle" class="btn btn-outline-dark">🌓 Dark Mode</button>
+    </div>
 
-    <!-- Single server test form -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Test a Single Server</h5>
-            <div id="spinner" class="text-center mb-4" style="display: none;">
-              <div class="spinner-border text-primary" role="status">
-                  <span class="visually-hidden">Loading...</span>
-              </div>
-          </div>
-          
-            <form action="/submit" method="POST" class="row g-3">
-                <div class="col-md-5">
-                    <input type="text" name="server" class="form-control" placeholder="Server (example.com)" required>
-                </div>
-                <div class="col-md-3">
-                    <input type="text" name="port" class="form-control" placeholder="Port (80)" required>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Test</button>
-                </div>
-            </form>
+    <h2 class="mb-4">Go Network Test UI</h2>
+
+    <!-- Loading Spinner -->
+    <div id="spinner" class="text-center mb-4" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 
-    <!-- File upload form -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Upload a List of Servers</h5>
-            <form action="/upload" method="POST" enctype="multipart/form-data" class="d-flex gap-3">
-                <input type="file" name="file" class="form-control" accept=".txt" required>
-                <button type="submit" class="btn btn-success">Upload & Test</button>
-            </form>
-            <small class="text-muted">Text file format: one server,port pair per line (e.g. google.com,80)</small>
+    <!-- Server/Port Form -->
+    <form action="/submit" method="POST" class="mb-3">
+        <div class="row g-2">
+            <div class="col-md-5">
+                <input type="text" name="server" class="form-control" placeholder="Server (e.g., google.com)" required>
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="port" class="form-control" placeholder="Port (e.g., 80)" required>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Test</button>
+            </div>
         </div>
+    </form>
+
+    <!-- File Upload Form -->
+    <form action="/upload" method="POST" enctype="multipart/form-data" class="mb-3">
+        <div class="row g-2">
+            <div class="col-md-7">
+                <input type="file" name="file" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">Upload & Test</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Download CSV Button -->
+    <div class="mb-3">
+        <a href="/download" class="btn btn-primary">⬇️ Download Results CSV</a>
     </div>
 
     <!-- Results Table -->
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Test Results</h5>
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Server</th>
-                            <th>Port</th>
-                            <th>Status</th>
-                            <th>Response Time</th>
-                            <th>Timestamp</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .}}
-                        <tr>
-                            <td>{{.Server}}</td>
-                            <td>{{.Port}}</td>
-                            <td>
-                                {{if eq .Status "Success"}}
-                                    <span class="badge bg-success">Success</span>
-                                {{else}}
-                                    <span class="badge bg-danger">{{.Status}}</span>
-                                {{end}}
-                            </td>
-                            <td>{{.ResponseTime}}</td>
-                            <td>{{.Timestamp.Format "2006-01-02 15:04:05"}}</td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
-                <div class="mb-3">
-                  <a href="/download" class="btn btn-primary">⬇️ Download Results CSV</a>
-              </div>
-              
-            </div>
-        </div>
-    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Server</th>
+                <th>Port</th>
+                <th>Status</th>
+                <th>Response Time</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .}}
+            <tr>
+                <td>{{.Server}}</td>
+                <td>{{.Port}}</td>
+                <td>
+                    {{if eq .Status "Success"}}
+                        <span class="badge bg-success">Success</span>
+                    {{else}}
+                        <span class="badge bg-danger">{{.Status}}</span>
+                    {{end}}
+                </td>
+                <td>{{.ResponseTime}}</td>
+                <td>{{.Timestamp.Format "2006-01-02 15:04:05"}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
 
-</div>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-      // Attach event listener to all forms
-      document.querySelectorAll("form").forEach(function(form) {
-          form.addEventListener("submit", function() {
-              document.getElementById("spinner").style.display = "block";
-          });
-      });
-  });
-</script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Spinner logic on form submit
+            document.querySelectorAll("form").forEach(function(form) {
+                form.addEventListener("submit", function() {
+                    document.getElementById("spinner").style.display = "block";
+                });
+            });
+
+            // Dark mode toggle logic
+            const toggleButton = document.getElementById("darkModeToggle");
+            const currentMode = localStorage.getItem("theme");
+
+            if (currentMode === "dark") {
+                document.body.classList.add("dark-mode");
+            }
+
+            toggleButton.addEventListener("click", function() {
+                document.body.classList.toggle("dark-mode");
+                if (document.body.classList.contains("dark-mode")) {
+                    localStorage.setItem("theme", "dark");
+                } else {
+                    localStorage.setItem("theme", "light");
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>
