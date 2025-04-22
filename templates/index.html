@@ -58,6 +58,7 @@
                             <th>Port</th>
                             <th>Status</th>
                             <th>Response Time</th>
+                            <th>Timestamp</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,6 +74,7 @@
                                 {{end}}
                             </td>
                             <td>{{.ResponseTime}}</td>
+                            <td>{{.Timestamp.Format "2006-01-02 15:04:05"}}</td>
                         </tr>
                         {{end}}
                     </tbody>

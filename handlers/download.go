@@ -14,7 +14,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	defer writer.Flush()
 
 	// Write header
-	writer.Write([]string{"Server", "Port", "Status", "ResponseTime"})
+	writer.Write([]string{"Server", "Port", "Status", "ResponseTime", "Timestamp"})
 
 	// Write each result row
 	for _, result := range storage.GetResults() {
@@ -23,6 +23,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 			result.Port,
 			result.Status,
 			result.ResponseTime.String(),
+			result.Timestamp.Format("2006-01-02 15:04:05"),
 		})
 	}
 }
