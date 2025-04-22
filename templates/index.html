@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Go Network Tester</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h1 class="mb-4">🔌 Go Network Tester</h1>
+
+    <!-- Single server test form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Test a Single Server</h5>
+            <form action="/submit" method="POST" class="row g-3">
+                <div class="col-md-5">
+                    <input type="text" name="server" class="form-control" placeholder="Server (example.com)" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="port" class="form-control" placeholder="Port (80)" required>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Test</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- File upload form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Upload a List of Servers</h5>
+            <form action="/upload" method="POST" enctype="multipart/form-data" class="d-flex gap-3">
+                <input type="file" name="file" class="form-control" accept=".txt" required>
+                <button type="submit" class="btn btn-success">Upload & Test</button>
+            </form>
+            <small class="text-muted">Text file format: one server,port pair per line (e.g. google.com,80)</small>
+        </div>
+    </div>
+
+    <!-- Results Table -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Test Results</h5>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Server</th>
+                            <th>Port</th>
+                            <th>Status</th>
+                            <th>Response Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .}}
+                        <tr>
+                            <td>{{.Server}}</td>
+                            <td>{{.Port}}</td>
+                            <td>
+                                {{if eq .Status "Success"}}
+                                    <span class="badge bg-success">Success</span>
+                                {{else}}
+                                    <span class="badge bg-danger">{{.Status}}</span>
+                                {{end}}
+                            </td>
+                            <td>{{.ResponseTime}}</td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
