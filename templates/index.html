@@ -14,6 +14,12 @@
     <div class="card mb-4">
         <div class="card-body">
             <h5 class="card-title">Test a Single Server</h5>
+            <div id="spinner" class="text-center mb-4" style="display: none;">
+              <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+              </div>
+          </div>
+          
             <form action="/submit" method="POST" class="row g-3">
                 <div class="col-md-5">
                     <input type="text" name="server" class="form-control" placeholder="Server (example.com)" required>
@@ -80,6 +86,16 @@
     </div>
 
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      // Attach event listener to all forms
+      document.querySelectorAll("form").forEach(function(form) {
+          form.addEventListener("submit", function() {
+              document.getElementById("spinner").style.display = "block";
+          });
+      });
+  });
+</script>
 
 </body>
 </html>
